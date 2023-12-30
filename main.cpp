@@ -7,14 +7,13 @@
 #include <sstream>
 #include <stack>
 #include <fstream>
-#include <map>
 #include <set>
 
 typedef std::string item_type;
 
 typedef struct tree {
     item_type item;
-    std::unordered_map<int, std::vector<int>> positions; // Map to store positions by line number
+    std::unordered_map<int, std::vector<int>> positions;
     struct tree* parent;
     struct tree* left;
     struct tree* right;
@@ -37,11 +36,11 @@ struct CompareStrings {
 void add_tree(tree** t, item_type item, tree* parent, int line_number, int position) {
     tree* p;
     if (*t == NULL) {
-        p = new tree(); // Allocating memory for tree node
+        p = new tree();
         p->left = p->right = NULL;
         p->parent = parent;
         p->item = item;
-        p->positions[line_number].push_back(position); // Store position by line number
+        p->positions[line_number].push_back(position);
         *t = p;
         return;
     }
@@ -57,7 +56,7 @@ void tokenizeText(const char* text, std::vector<std::string>& tokens) {
     std::istringstream iss(text);
     std::string word;
     while (iss >> word) {
-        // Remove any non-alphanumeric characters from the word
+
         word.erase(std::remove_if(word.begin(), word.end(), [](char c) { return !std::isalnum(c); }), word.end());
         if (!word.empty()) {
             tokens.push_back(word);
@@ -75,7 +74,7 @@ void extractTextFromHTML(const char* filename, tree** root) {
     std::string line;
     int line_number = 1;
     while (std::getline(file, line)) {
-        // Parse HTML content here and add words to the index as before
+
         xmlDocPtr doc = htmlReadMemory(line.c_str(), line.size(), nullptr, nullptr, HTML_PARSE_NOBLANKS | HTML_PARSE_NOERROR | HTML_PARSE_NOWARNING);
         if (doc != nullptr) {
             xmlNodePtr cur = xmlDocGetRootElement(doc);
@@ -109,10 +108,9 @@ void extractTextFromHTML(const char* filename, tree** root) {
 void printReverseIndex(tree* t) {
     if (t == nullptr) return;
 
-    std::set<std::string, CompareStrings, std::allocator<std::string>> sortedWords; // Set to store sorted words
-    std::unordered_map<std::string, std::vector<int>> wordPositions; // Map to store word positions
+    std::set<std::string, CompareStrings, std::allocator<std::string>> sortedWords;
+    std::unordered_map<std::string, std::vector<int>> wordPositions;
 
-    // Traverse the tree to collect word occurrences
     std::stack<tree*> nodes;
     nodes.push(t);
     while (!nodes.empty()) {
@@ -149,7 +147,7 @@ void printReverseIndex(tree* t) {
 
 int main() {
     tree* root = nullptr;
-    const char* filename = "/Users/moldovexc/CLionProjects/string_binary/input.txt"; // Replace with your HTML file path
+    const char* filename = "/Users/moldovexc/CLionProjects/string_binary/input.txt";
 
     extractTextFromHTML(filename, &root);
 
